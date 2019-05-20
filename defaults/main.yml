@@ -1,1 +1,12 @@
 ---
+
+aws_vpc_cidr: ~
+aws_vpc_cidr_subnet_private_a: ~
+aws_vpc_cidr_subnet_private_b: ~
+aws_vpc_cidr_subnet_private_c: ~
+aws_vpc_cidr_subnet_public_a: ~
+aws_vpc_cidr_subnet_public_b: ~
+aws_vpc_cidr_subnet_public_c: ~
+aws_vpc_region: ~
+aws_vpc_stack_name: ~
+aws_vpc_tags: ~
