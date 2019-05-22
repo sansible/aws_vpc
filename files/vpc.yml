@@ -13,18 +13,22 @@ Parameters:
     Description: CIDR of Private Subnet A
     Type: String
   CidrPrivateSubnetB:
+    Default: ""
     Description: CIDR of Private Subnet B
     Type: String
   CidrPrivateSubnetC:
+    Default: ""
     Description: CIDR of Private Subnet C
     Type: String
   CidrPublicSubnetA:
     Description: CIDR of Public Subnet A
     Type: String
   CidrPublicSubnetB:
+    Default: ""
     Description: CIDR of Public Subnet B
     Type: String
   CidrPublicSubnetC:
+    Default: ""
     Description: CIDR of Public Subnet C
     Type: String
   Name:

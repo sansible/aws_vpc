@@ -26,16 +26,16 @@ and run `ansible-galaxy install -p ./roles -r roles.yml`
 
 |Variable|Default|Description|
 |---|---|---|
-|aws_vpc_cidr|~|CIDR for VPC|
-|aws_vpc_cidr_subnet_private_a|~|CIDR for private subnet a|
-|aws_vpc_cidr_subnet_private_b|~|CIDR for private subnet b|
-|aws_vpc_cidr_subnet_private_c|~|CIDR for private subnet c|
-|aws_vpc_cidr_subnet_public_a|~|CIDR for public subnet a|
-|aws_vpc_cidr_subnet_public_b|~|CIDR for public subnet b|
-|aws_vpc_cidr_subnet_public_c|~|CIDR for public subnet c|
-|aws_vpc_region|~|AWS region for VPC|
-|aws_vpc_stack_name|~|Name for VPC CF stack|
-|aws_vpc_tags|~|Tags for the VPC, you must specify a Name tag|
+|sansible_aws_vpc_cidr|~|CIDR for VPC|
+|sansible_aws_vpc_cidr_subnet_private_a|~|CIDR for private subnet a|
+|sansible_aws_vpc_cidr_subnet_private_b|~|CIDR for private subnet b|
+|sansible_aws_vpc_cidr_subnet_private_c|~|CIDR for private subnet c|
+|sansible_aws_vpc_cidr_subnet_public_a|~|CIDR for public subnet a|
+|sansible_aws_vpc_cidr_subnet_public_b|~|CIDR for public subnet b|
+|sansible_aws_vpc_cidr_subnet_public_c|~|CIDR for public subnet c|
+|sansible_aws_vpc_region|~|AWS region for VPC|
+|sansible_aws_vpc_stack_name|~|Name for VPC CF stack|
+|sansible_aws_vpc_tags|~|Tags for the VPC, you must specify a Name tag|
 
 ## Examples
 
@@ -47,12 +47,12 @@ Simply include role in your playbook
 
   roles:
     - role: sansible.aws_vpc
-      aws_vpc_cidr: 10.0.0.0/21
-      aws_vpc_cidr_subnet_private_a: 10.1.0.0/24
-      aws_vpc_cidr_subnet_public_a: 10.1.1.0/24
-      aws_vpc_region: eu-west-1
-      aws_vpc_stack_name: dev-vpc
-      aws_vpc_tags:
+      sansible_aws_vpc_cidr: 10.0.0.0/21
+      sansible_aws_vpc_cidr_subnet_private_a: 10.1.0.0/24
+      sansible_aws_vpc_cidr_subnet_public_a: 10.1.1.0/24
+      sansible_aws_vpc_region: eu-west-1
+      sansible_aws_vpc_stack_name: dev-vpc
+      sansible_aws_vpc_tags:
         Name: dev_vpc
 ```
 
@@ -62,15 +62,15 @@ Simply include role in your playbook
 
   roles:
     - role: sansible.aws_vpc
-      aws_vpc_cidr: 10.0.0.0/21
-      aws_vpc_cidr_subnet_private_a: 10.1.0.0/24
-      aws_vpc_cidr_subnet_private_b: 10.1.1.0/24
-      aws_vpc_cidr_subnet_private_c: 10.1.2.0/24
-      aws_vpc_cidr_subnet_public_a: 10.1.3.0/24
-      aws_vpc_cidr_subnet_public_b: 10.1.4.0/24
-      aws_vpc_cidr_subnet_public_c: 10.1.5.0/24
-      aws_vpc_region: eu-west-1
-      aws_vpc_stack_name: dev-vpc
-      aws_vpc_tags:
+      sansible_aws_vpc_cidr: 10.0.0.0/21
+      sansible_aws_vpc_cidr_subnet_private_a: 10.1.0.0/24
+      sansible_aws_vpc_cidr_subnet_private_b: 10.1.1.0/24
+      sansible_aws_vpc_cidr_subnet_private_c: 10.1.2.0/24
+      sansible_aws_vpc_cidr_subnet_public_a: 10.1.3.0/24
+      sansible_aws_vpc_cidr_subnet_public_b: 10.1.4.0/24
+      sansible_aws_vpc_cidr_subnet_public_c: 10.1.5.0/24
+      sansible_aws_vpc_region: eu-west-1
+      sansible_aws_vpc_stack_name: dev-vpc
+      sansible_aws_vpc_tags:
         Name: dev_vpc
 ```
