@@ -1,32 +1,30 @@
 ---
 
-# The default driver for molecule is docker, but other backend are supported by molecule.
-# See https://molecule.readthedocs.io/en/latest/configuration.html#driver for details.
 driver:
   name: docker
 
-# The platforms on which to test your role.  Groups can be created to spin up multiple instances per test.
-# See https://molecule.readthedocs.io/en/latest/configuration.html#platforms for details.
-# NOTE: Different drivers (see above) may have different configuration options.
 platforms:
-  - name: ROLE_NAME-trusty
-    image: ubuntu:trusty
-  - name: ROLE_NAME-xenial
-    image: ubuntu:xenial
-  - name: ROLE_NAME-bionic
-    image: ubuntu:bionic
+  - name: aws_vpc-localstack
+    env:
+      DEBUG: "1"
+      SERVICES: cloudformation
+    image: localstack/localstack:0.9.3
+    exposed_ports:
+      - 4581/tcp
+    published_ports:
+      - 0.0.0.0:4581:4581/tcp
 
-# Ansible is the only supported provisioner.  Configure Ansible options here, change the linter for Ansible playbooks,
-# or modify the playbooks run for the various molecule tasks.
-# See https://molecule.readthedocs.io/en/latest/configuration.html#provisioner for details.
 provisioner:
   name: ansible
+  env:
+    AWS_ACCESS_KEY_ID: foobar
+    AWS_DEFAULT_REGION: foobar
+    AWS_SECRET_ACCESS_KEY: foobar
   lint:
     name: ansible-lint
+  options:
+    vvv: True
 
-# Configures the YAML linter; currently, only support for yamllint is implemented.  Configuration options for
-# yamllint (https://yamllint.readthedocs.io/en/latest/configuration.html) can be specified.
-# See https://molecule.readthedocs.io/en/latest/configuration.html#lint for details.
 lint:
   name: yamllint
   options:
@@ -38,20 +36,21 @@ lint:
           max: 159
         truthy: disable
 
-# Dependency resolution is by default handled through Ansible Galaxy, but support for gilt (http://gilt.readthedocs.io/)
-# is available.  See https://molecule.readthedocs.io/en/latest/configuration.html#dependency for details.
 dependency:
   name: galaxy
 
-# Every role to be tested via molecule requires at least one scenario.  Change the tasks executed for molecule
-# commands here, if necessary.
-# See https://molecule.readthedocs.io/en/latest/configuration.html#scenario for details.
 scenario:
   name: default
+  test_sequence:
+    - destroy
+    - dependency
+    - create
+    - prepare
+    - converge
+    - side_effect
+    - verify
+    - destroy
 
-# The default verifier is testinfra, but goss is supported as well.  Configure the verifier, verifier options, and,
-# if using testinfra, linter and linter options here.
-# See https://molecule.readthedocs.io/en/latest/configuration.html#verifier for details.
 verifier:
   name: testinfra
   lint:
