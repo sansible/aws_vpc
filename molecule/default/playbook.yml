@@ -8,14 +8,14 @@
 
   roles:
     - role: aws_vpc
-      aws_vpc_cidr: 10.0.0.0/21
-      aws_vpc_cidr_subnet_private_a: 10.1.0.0/24
-      aws_vpc_cidr_subnet_private_b: 10.1.1.0/24
-      aws_vpc_cidr_subnet_private_c: 10.1.2.0/24
-      aws_vpc_cidr_subnet_public_a: 10.1.3.0/24
-      aws_vpc_cidr_subnet_public_b: 10.1.4.0/24
-      aws_vpc_cidr_subnet_public_c: 10.1.5.0/24
-      aws_vpc_region: eu-west-1
-      aws_vpc_stack_name: dev-vpc
-      aws_vpc_tags:
+      sansible_aws_vpc_cidr: 10.0.0.0/21
+      sansible_aws_vpc_cidr_subnet_private_a: 10.1.0.0/24
+      sansible_aws_vpc_cidr_subnet_private_b: 10.1.1.0/24
+      sansible_aws_vpc_cidr_subnet_private_c: 10.1.2.0/24
+      sansible_aws_vpc_cidr_subnet_public_a: 10.1.3.0/24
+      sansible_aws_vpc_cidr_subnet_public_b: 10.1.4.0/24
+      sansible_aws_vpc_cidr_subnet_public_c: 10.1.5.0/24
+      sansible_aws_vpc_region: eu-west-1
+      sansible_aws_vpc_stack_name: dev-vpc
+      sansible_aws_vpc_tags:
         Name: dev_vpc

@@ -3,51 +3,51 @@
 - name: Assert configuration
   assert:
     that:
-      - aws_vpc_cidr is not none and aws_vpc_cidr | length > 0
-      - aws_vpc_cidr_subnet_private_a and aws_vpc_cidr_subnet_private_a | length > 0
-      - aws_vpc_cidr_subnet_public_a and aws_vpc_cidr_subnet_public_a | length > 0
-      - aws_vpc_region is not none and aws_vpc_region | length > 0
-      - aws_vpc_stack_name is not none and aws_vpc_stack_name | length > 0
-      - aws_vpc_tags is not none and aws_vpc_tags | length > 0
-      - aws_vpc_tags.Name is not none
+      - sansible_aws_vpc_cidr is not none and sansible_aws_vpc_cidr | length > 0
+      - sansible_aws_vpc_cidr_subnet_private_a and sansible_aws_vpc_cidr_subnet_private_a | length > 0
+      - sansible_aws_vpc_cidr_subnet_public_a and sansible_aws_vpc_cidr_subnet_public_a | length > 0
+      - sansible_aws_vpc_region is not none and sansible_aws_vpc_region | length > 0
+      - sansible_aws_vpc_stack_name is not none and sansible_aws_vpc_stack_name | length > 0
+      - sansible_aws_vpc_tags is not none and sansible_aws_vpc_tags | length > 0
+      - sansible_aws_vpc_tags.Name is not none
 
 - name: Assert subnet configuration for 2 zones or more
   assert:
     that:
-      - aws_vpc_cidr_subnet_private_b | length > 0
-      - aws_vpc_cidr_subnet_public_b | length > 0
-  when: aws_vpc_cidr_subnet_private_b or
-    aws_vpc_cidr_subnet_public_b
+      - sansible_aws_vpc_cidr_subnet_private_b | length > 0
+      - sansible_aws_vpc_cidr_subnet_public_b | length > 0
+  when: sansible_aws_vpc_cidr_subnet_private_b or
+    sansible_aws_vpc_cidr_subnet_public_b
 
 - name: Assert subnet configuration for 3 zones
   assert:
     that:
-      - aws_vpc_cidr_subnet_private_c | length > 0
-      - aws_vpc_cidr_subnet_public_c | length > 0
-  when: aws_vpc_cidr_subnet_private_c or
-    aws_vpc_cidr_subnet_public_c
+      - sansible_aws_vpc_cidr_subnet_private_c | length > 0
+      - sansible_aws_vpc_cidr_subnet_public_c | length > 0
+  when: sansible_aws_vpc_cidr_subnet_private_c or
+    sansible_aws_vpc_cidr_subnet_public_c
 
 - name: Ensure VPC Stack
   cloudformation:
-    region: "{{ aws_vpc_region }}"
-    stack_name: "{{ aws_vpc_stack_name }}"
+    region: "{{ sansible_aws_vpc_region }}"
+    stack_name: "{{ sansible_aws_vpc_stack_name }}"
     state: present
-    tags: "{{ aws_vpc_tags }}"
+    tags: "{{ sansible_aws_vpc_tags }}"
     template: "{{ role_path }}/files/vpc.yml"
     template_parameters:
-      Cidr: "{{ aws_vpc_cidr }}"
-      CidrPrivateSubnetA: "{{ aws_vpc_cidr_subnet_private_a }}"
-      CidrPrivateSubnetB: "{{ aws_vpc_cidr_subnet_private_b }}"
-      CidrPrivateSubnetC: "{{ aws_vpc_cidr_subnet_private_c }}"
-      CidrPublicSubnetA: "{{ aws_vpc_cidr_subnet_public_a }}"
-      CidrPublicSubnetB: "{{ aws_vpc_cidr_subnet_public_b }}"
-      CidrPublicSubnetC: "{{ aws_vpc_cidr_subnet_public_c }}"
-      Name: "{{ aws_vpc_tags.Name }}"
-      Region: "{{ aws_vpc_region }}"
-  register: aws_vpc_cf_output
+      Cidr: "{{ sansible_aws_vpc_cidr }}"
+      CidrPrivateSubnetA: "{{ sansible_aws_vpc_cidr_subnet_private_a }}"
+      CidrPrivateSubnetB: "{{ sansible_aws_vpc_cidr_subnet_private_b }}"
+      CidrPrivateSubnetC: "{{ sansible_aws_vpc_cidr_subnet_private_c }}"
+      CidrPublicSubnetA: "{{ sansible_aws_vpc_cidr_subnet_public_a }}"
+      CidrPublicSubnetB: "{{ sansible_aws_vpc_cidr_subnet_public_b }}"
+      CidrPublicSubnetC: "{{ sansible_aws_vpc_cidr_subnet_public_c }}"
+      Name: "{{ sansible_aws_vpc_tags.Name }}"
+      Region: "{{ sansible_aws_vpc_region }}"
+  register: sansible_aws_vpc_cf_output
 
 - name: Set output facts
   set_fact:
-    aws_vpc_output: "{{ aws_vpc_output | combine({
-      aws_vpc_tags.Name: aws_vpc_cf_output
+    sansible_aws_vpc_output: "{{ sansible_aws_vpc_output | combine({
+      sansible_aws_vpc_tags.Name: sansible_aws_vpc_cf_output
     }) }}"

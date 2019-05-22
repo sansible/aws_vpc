@@ -1,12 +1,12 @@
 ---
 
-aws_vpc_cidr: ~
-aws_vpc_cidr_subnet_private_a: ~
-aws_vpc_cidr_subnet_private_b: ~
-aws_vpc_cidr_subnet_private_c: ~
-aws_vpc_cidr_subnet_public_a: ~
-aws_vpc_cidr_subnet_public_b: ~
-aws_vpc_cidr_subnet_public_c: ~
-aws_vpc_region: ~
-aws_vpc_stack_name: ~
-aws_vpc_tags: ~
+sansible_aws_vpc_cidr: ~
+sansible_aws_vpc_cidr_subnet_private_a: ~
+sansible_aws_vpc_cidr_subnet_private_b: ~
+sansible_aws_vpc_cidr_subnet_private_c: ~
+sansible_aws_vpc_cidr_subnet_public_a: ~
+sansible_aws_vpc_cidr_subnet_public_b: ~
+sansible_aws_vpc_cidr_subnet_public_c: ~
+sansible_aws_vpc_region: ~
+sansible_aws_vpc_stack_name: ~
+sansible_aws_vpc_tags: ~
