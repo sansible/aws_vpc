@@ -21,6 +21,7 @@ Parameters:
     Description: CIDR of Private Subnet C
     Type: String
   CidrPublicSubnetA:
+    Default: ""
     Description: CIDR of Public Subnet A
     Type: String
   CidrPublicSubnetB:
@@ -39,12 +40,27 @@ Parameters:
     Type: String
 
 Conditions:
-  SecondZone:
+  PrivateSecondZone:
+    Fn::Not:
+      - Fn::Equals:
+        - ""
+        - Ref: CidrPrivateSubnetB
+  PrivateThirdZone:
+    Fn::Not:
+      - Fn::Equals:
+        - ""
+        - Ref: CidrPrivateSubnetC
+  PublicFirstZone:
+    Fn::Not:
+      - Fn::Equals:
+        - ""
+        - Ref: CidrPublicSubnetA
+  PublicSecondZone:
     Fn::Not:
       - Fn::Equals:
         - ""
         - Ref: CidrPublicSubnetB
-  ThirdZone:
+  PublicThirdZone:
     Fn::Not:
       - Fn::Equals:
         - ""
@@ -60,9 +76,11 @@ Resources:
       EnableDnsHostnames: true
 
   InternetGateway:
+    Condition: PublicFirstZone
     Type: AWS::EC2::InternetGateway
 
   AttachGateway:
+    Condition: PublicFirstZone
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId:
@@ -71,6 +89,7 @@ Resources:
         Ref: InternetGateway
 
   RouteTablePublic:
+    Condition: PublicFirstZone
     Type: AWS::EC2::RouteTable
     Properties:
       Tags:
@@ -81,6 +100,7 @@ Resources:
         Ref: VPC
 
   InternetRoute:
+    Condition: PublicFirstZone
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
     Properties:
@@ -91,6 +111,7 @@ Resources:
         Ref: InternetGateway
 
   SubnetPublicA:
+    Condition: PublicFirstZone
     Type: AWS::EC2::Subnet
     Properties:
       VpcId:
@@ -126,6 +147,7 @@ Resources:
             Fn::Sub: "${Name}_private_a"
 
   SubnetPublicARouteTableAssociation:
+    Condition: PublicFirstZone
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -152,7 +174,7 @@ Resources:
         Ref: RouteTablePrivateA
 
   SubnetPublicB:
-    Condition: SecondZone
+    Condition: PublicSecondZone
     Type: AWS::EC2::Subnet
     Properties:
       VpcId:
@@ -172,7 +194,7 @@ Resources:
 
   SubnetPrivateB:
     Type: AWS::EC2::Subnet
-    Condition: SecondZone
+    Condition: PrivateSecondZone
     Properties:
       VpcId:
         Ref: VPC
@@ -189,7 +211,7 @@ Resources:
           Fn::Sub: "${Name}_private_b"
 
   SubnetPublicBRouteTableAssociation:
-    Condition: SecondZone
+    Condition: PublicSecondZone
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -198,7 +220,7 @@ Resources:
         Ref: RouteTablePublic
 
   RouteTablePrivateB:
-    Condition: SecondZone
+    Condition: PrivateSecondZone
     Type: AWS::EC2::RouteTable
     Properties:
       Tags:
@@ -209,7 +231,7 @@ Resources:
         Ref: VPC
 
   SubnetPrivateBRouteTableAssociation:
-    Condition: SecondZone
+    Condition: PrivateSecondZone
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -218,7 +240,7 @@ Resources:
         Ref: RouteTablePrivateB
 
   SubnetPublicC:
-    Condition: ThirdZone
+    Condition: PublicThirdZone
     Type: AWS::EC2::Subnet
     Properties:
       VpcId:
@@ -237,7 +259,7 @@ Resources:
             Fn::Sub: "${Name}_public_c"
 
   SubnetPrivateC:
-    Condition: ThirdZone
+    Condition: PrivateThirdZone
     Type: AWS::EC2::Subnet
     Properties:
       VpcId:
@@ -256,7 +278,7 @@ Resources:
             Fn::Sub: "${Name}_private_c"
 
   SubnetPublicCRouteTableAssociation:
-    Condition: ThirdZone
+    Condition: PublicThirdZone
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -265,7 +287,7 @@ Resources:
         Ref: RouteTablePublic
 
   RouteTablePrivateC:
-    Condition: ThirdZone
+    Condition: PrivateThirdZone
     Type: AWS::EC2::RouteTable
     Properties:
       Tags:
@@ -276,7 +298,7 @@ Resources:
         Ref: VPC
 
   SubnetPrivateCRouteTableAssociation:
-    Condition: ThirdZone
+    Condition: PrivateThirdZone
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -291,6 +313,7 @@ Outputs:
       Ref: Cidr
 
   InternetGateway:
+    Condition: PublicFirstZone
     Description: ID the Internet Gateway
     Value:
       Ref: InternetGateway
@@ -301,13 +324,13 @@ Outputs:
       Ref: RouteTablePrivateA
 
   RouteTablePrivateB:
-    Condition: SecondZone
+    Condition: PrivateSecondZone
     Description: ID of the Private Route Table B
     Value:
       Ref: RouteTablePrivateB
 
   RouteTablePrivateC:
-    Condition: ThirdZone
+    Condition: PrivateThirdZone
     Description: ID of the Private Route Table C
     Value:
       Ref: RouteTablePrivateC
@@ -316,14 +339,15 @@ Outputs:
     Description: IDs of the Private RT
     Value:
       Fn::If:
-        - ThirdZone
+        - PrivateThirdZone
         - Fn::Sub: "${RouteTablePrivateA},${RouteTablePrivateB},${RouteTablePrivateC}"
         - Fn::If:
-          - SecondZone
+          - PrivateSecondZone
           - Fn::Sub: "${RouteTablePrivateA},${RouteTablePrivateB}"
           - Fn::Sub: "${RouteTablePrivateA}"
 
   RouteTablePublic:
+    Condition: PublicFirstZone
     Description: ID of the Public RT
     Value:
       Ref: RouteTablePublic
@@ -334,30 +358,31 @@ Outputs:
       Ref: SubnetPrivateA
 
   SubnetPrivateB:
-    Condition: SecondZone
+    Condition: PrivateSecondZone
     Description: ID of the Private Subnet B
     Value:
       Ref: SubnetPrivateB
 
   SubnetPrivateC:
-    Condition: ThirdZone
+    Condition: PrivateThirdZone
     Description: ID of the Private Subnet C
     Value:
       Ref: SubnetPrivateC
 
   SubnetPublicA:
+    Condition: PublicFirstZone
     Description: ID of the Public Subnet A
     Value:
       Ref: SubnetPublicA
 
   SubnetPublicB:
-    Condition: SecondZone
+    Condition: PublicSecondZone
     Description: ID of the Public Subnet B
     Value:
       Ref: SubnetPublicB
 
   SubnetPublicC:
-    Condition: ThirdZone
+    Condition: PublicThirdZone
     Description: ID of the Public Subnet C
     Value:
       Ref: SubnetPublicC
@@ -366,10 +391,10 @@ Outputs:
     Description: IDs of the Private Subnets
     Value:
       Fn::If:
-        - ThirdZone
+        - PrivateThirdZone
         - Fn::Sub: "${SubnetPrivateA},${SubnetPrivateB},${SubnetPrivateC}"
         - Fn::If:
-          - SecondZone
+          - PrivateSecondZone
           - Fn::Sub: "${SubnetPrivateA},${SubnetPrivateB}"
           - Fn::Sub: "${SubnetPrivateA}"
 
@@ -377,12 +402,15 @@ Outputs:
     Description: IDs of the Public Subnets
     Value:
       Fn::If:
-        - ThirdZone
+        - PublicThirdZone
         - Fn::Sub: "${SubnetPublicA},${SubnetPublicB},${SubnetPublicC}"
         - Fn::If:
-          - SecondZone
+          - PublicSecondZone
           - Fn::Sub: "${SubnetPublicA},${SubnetPublicB}"
-          - Fn::Sub: "${SubnetPublicA}"
+          - Fn::If:
+            - PublicFirstZone
+            - Fn::Sub: "${SubnetPublicA}"
+            - ""
 
   VpcID:
     Description: ID of the VPC

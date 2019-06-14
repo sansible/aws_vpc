@@ -5,27 +5,37 @@
     that:
       - sansible_aws_vpc_cidr is not none and sansible_aws_vpc_cidr | length > 0
       - sansible_aws_vpc_cidr_subnet_private_a and sansible_aws_vpc_cidr_subnet_private_a | length > 0
-      - sansible_aws_vpc_cidr_subnet_public_a and sansible_aws_vpc_cidr_subnet_public_a | length > 0
       - sansible_aws_vpc_region is not none and sansible_aws_vpc_region | length > 0
       - sansible_aws_vpc_stack_name is not none and sansible_aws_vpc_stack_name | length > 0
       - sansible_aws_vpc_tags is not none and sansible_aws_vpc_tags | length > 0
       - sansible_aws_vpc_tags.Name is not none
 
-- name: Assert subnet configuration for 2 zones or more
+- name: Assert private subnet c configuration is in sequence
   assert:
     that:
+      - sansible_aws_vpc_cidr_subnet_private_b is not none
       - sansible_aws_vpc_cidr_subnet_private_b | length > 0
-      - sansible_aws_vpc_cidr_subnet_public_b | length > 0
-  when: sansible_aws_vpc_cidr_subnet_private_b or
-    sansible_aws_vpc_cidr_subnet_public_b
+  when:
+    - sansible_aws_vpc_cidr_subnet_private_c is not none
+    - sansible_aws_vpc_cidr_subnet_private_c | length > 0
 
-- name: Assert subnet configuration for 3 zones
+- name: Assert public subnet b configuration is in sequence
   assert:
     that:
-      - sansible_aws_vpc_cidr_subnet_private_c | length > 0
-      - sansible_aws_vpc_cidr_subnet_public_c | length > 0
-  when: sansible_aws_vpc_cidr_subnet_private_c or
-    sansible_aws_vpc_cidr_subnet_public_c
+      - sansible_aws_vpc_cidr_subnet_public_a is not none
+      - sansible_aws_vpc_cidr_subnet_public_a | length > 0
+  when:
+    - sansible_aws_vpc_cidr_subnet_public_b is not none
+    - sansible_aws_vpc_cidr_subnet_public_b | length > 0
+
+- name: Assert public subnet c configuration is in sequence
+  assert:
+    that:
+      - sansible_aws_vpc_cidr_subnet_public_b is not none
+      - sansible_aws_vpc_cidr_subnet_public_b | length > 0
+  when:
+    - sansible_aws_vpc_cidr_subnet_public_c is not none
+    - sansible_aws_vpc_cidr_subnet_public_c | length > 0
 
 - name: Ensure VPC Stack
   cloudformation:
@@ -37,11 +47,11 @@
     template_parameters:
       Cidr: "{{ sansible_aws_vpc_cidr }}"
       CidrPrivateSubnetA: "{{ sansible_aws_vpc_cidr_subnet_private_a }}"
-      CidrPrivateSubnetB: "{{ sansible_aws_vpc_cidr_subnet_private_b }}"
-      CidrPrivateSubnetC: "{{ sansible_aws_vpc_cidr_subnet_private_c }}"
-      CidrPublicSubnetA: "{{ sansible_aws_vpc_cidr_subnet_public_a }}"
-      CidrPublicSubnetB: "{{ sansible_aws_vpc_cidr_subnet_public_b }}"
-      CidrPublicSubnetC: "{{ sansible_aws_vpc_cidr_subnet_public_c }}"
+      CidrPrivateSubnetB: "{{ sansible_aws_vpc_cidr_subnet_private_b if sansible_aws_vpc_cidr_subnet_private_b else '' }}"
+      CidrPrivateSubnetC: "{{ sansible_aws_vpc_cidr_subnet_private_c if sansible_aws_vpc_cidr_subnet_private_c else '' }}"
+      CidrPublicSubnetA: "{{ sansible_aws_vpc_cidr_subnet_public_a if sansible_aws_vpc_cidr_subnet_public_a else '' }}"
+      CidrPublicSubnetB: "{{ sansible_aws_vpc_cidr_subnet_public_b if sansible_aws_vpc_cidr_subnet_public_b else '' }}"
+      CidrPublicSubnetC: "{{ sansible_aws_vpc_cidr_subnet_public_c if sansible_aws_vpc_cidr_subnet_public_c else '' }}"
       Name: "{{ sansible_aws_vpc_tags.Name }}"
       Region: "{{ sansible_aws_vpc_region }}"
   register: sansible_aws_vpc_cf_output

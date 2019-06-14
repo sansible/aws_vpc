@@ -2,6 +2,8 @@
 
 # For supported options, see https://galaxy.ansible.com/intro#meta
 
+allow_duplicates: yes
+
 galaxy_info:
   author: Sansible
   description: Deploys an AWS VPC using Cloudformation
